@@ -9,15 +9,16 @@ const Custom404 = () => {
     <div className="min-h-screen d-flex flex-column">
       <Head>
         <title>404 - Page not found</title>
+        <meta name="status" content="404" />
       </Head>
 
       <SimpleHeader />
 
       <div className="container-xl p-responsive py-6 width-full flex-1">
-        <article className="markdown-body col-md-10 col-lg-7 mx-auto">
-          <h1>Ooops!</h1>
-          <p className="lead-mktg">It looks like this page doesn't exist.</p>
-          <p className="lead-mktg">
+        <article className="col-md-10 col-lg-7 mx-auto">
+          <h1 className="mb-3 pb-3 border-bottom">Ooops!</h1>
+          <p className="f2 color-text-secondary">It looks like this page doesn't exist.</p>
+          <p className="f3">
             We track these errors automatically, but if the problem persists please feel free to
             contact us.
           </p>

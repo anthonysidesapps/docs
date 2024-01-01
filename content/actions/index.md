@@ -10,6 +10,7 @@ featuredLinks:
     - /actions/learn-github-actions
     - /actions/guides/about-continuous-integration
     - /actions/guides/about-packaging-with-github-actions
+    - /actions/monitoring-and-troubleshooting-workflows/about-monitoring-and-troubleshooting
   guideCards:
     - /actions/guides/setting-up-continuous-integration-using-workflow-templates
     - /actions/guides/publishing-nodejs-packages
@@ -36,7 +37,7 @@ redirect_from:
 layout: product-landing
 versions:
   fpt: '*'
-  ghes: '>=2.22'
+  ghes: '*'
   ghae: '*'
 children:
   - /quickstart
@@ -44,6 +45,7 @@ children:
   - /learn-github-actions
   - /managing-workflow-runs
   - /creating-actions
+  - /monitoring-and-troubleshooting-workflows
   - /using-github-hosted-runners
   - /hosting-your-own-runners
   - /reference

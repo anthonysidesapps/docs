@@ -9,7 +9,7 @@ redirect_from:
   - /actions/automating-your-workflow-with-github-actions/events-that-trigger-workflows
 versions:
   fpt: '*'
-  ghes: '>=2.22'
+  ghes: '*'
   ghae: '*'
 shortTitle: Events that trigger workflows
 ---
@@ -170,6 +170,27 @@ You can configure your workflow to run when webhook events are generated on {% d
 
 Not all webhook events trigger workflows. For the complete list of available webhook events and their payloads, see "[Webhook events and payloads](/developers/webhooks-and-events/webhook-events-and-payloads)."
 
+{% ifversion fpt or ghes > 3.2 or ghae-next %}
+### `branch_protection_rule`
+
+Runs your workflow anytime the `branch_protection_rule` event occurs. {% data reusables.developer-site.multiple_activity_types %} For information about the GraphQL API, see "[BranchProtectionRule](/graphql/reference/objects#branchprotectionrule)."
+
+{% data reusables.github-actions.branch-requirement %}
+
+| Webhook event payload | Activity types | `GITHUB_SHA` | `GITHUB_REF` |
+| --------------------- | -------------- | ------------ | -------------|
+| [`branch_protection_rule`](/webhooks/event-payloads/#branch_protection_rule) | - `created`<br/>- `edited`<br/>- `deleted` | Last commit on default branch | Default branch |
+
+{% data reusables.developer-site.limit_workflow_to_activity_types %}
+
+For example, you can run a workflow when a branch protection rule has been `created` or `deleted`.
+
+```yaml
+on:
+  branch_protection_rule:
+    types: [created, deleted]
+```
+{% endif %}
 ### `check_run`
 
 Runs your workflow anytime the `check_run` event occurs. {% data reusables.developer-site.multiple_activity_types %} For information about the REST API, see "[Check runs](/rest/reference/checks#runs)."
@@ -569,7 +590,9 @@ Runs your workflow anytime the `pull_request` event occurs. {% data reusables.de
 
 {% note %}
 
-**Note:** By default, a workflow only runs when a `pull_request`'s activity type is `opened`, `synchronize`, or `reopened`. To trigger workflows for more activity types, use the `types` keyword.
+**Notes:** 
+- By default, a workflow only runs when a `pull_request`'s activity type is `opened`, `synchronize`, or `reopened`. To trigger workflows for more activity types, use the `types` keyword.
+- Workflows will not run on `pull_request` activity if the pull request has a merge conflict. The merge conflict must be resolved first.
 
 {% endnote %}
 

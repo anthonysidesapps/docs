@@ -18,6 +18,7 @@ WORKDIR /usr/src/docs
 FROM base as all_deps
 
 COPY package*.json ./
+COPY .npmrc ./
 
 RUN npm ci
 
@@ -47,6 +48,7 @@ COPY content/index.md ./content/index.md
 
 COPY next.config.js ./next.config.js
 COPY tsconfig.json ./tsconfig.json
+COPY next-env.d.ts ./next-env.d.ts
 
 RUN npx tsc --noEmit
 
@@ -76,7 +78,7 @@ COPY --chown=node:node --from=builder /usr/src/docs/.next /usr/src/docs/.next
 # We should always be running in production mode
 ENV NODE_ENV production
 
-# Use Lunr instead of Algolia
+# Hide iframes, add warnings to external links
 ENV AIRGAP true
 
 # Copy only what's needed to run the server
@@ -95,4 +97,15 @@ COPY --chown=node:node next.config.js ./
 EXPOSE 80
 EXPOSE 443
 EXPOSE 4000
+CMD ["node", "server.mjs"]
+
+
+# --------------------------------------------------------------------------------
+# MAIN IMAGE WITH EARLY ACCESS
+# --------------------------------------------------------------------------------
+
+FROM production as production_early_access
+
+COPY --chown=node:node content/early-access ./content/early-access
+
 CMD ["node", "server.mjs"]

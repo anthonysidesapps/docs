@@ -20,7 +20,13 @@ jobs:
       REPORT_LABEL: broken link report
       REPORT_REPOSITORY: github/docs-content
     steps:
-      - uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+      - name: Check out repo's default branch
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+      - name: Setup Node
+        uses: actions/setup-node@38d90ce44d5275ad62cc48384b3d8a58c500bb5f
+        with:
+          node-version: 16.x
+          cache: npm
       - name: npm ci
         run: npm ci
       - name: npm run build
@@ -28,6 +34,15 @@ jobs:
       - name: Run script
         run: |
           script/check-english-links.js > broken_links.md
+
+      # check-english-links.js returns 0 if no links are broken, and 1 if any links
+      # are broken. When an Actions step's exit code is 1, the action run's job status
+      # is failure and the run ends. The following steps create an issue for the
+      # broken link report only if any links are broken, so `if: ${{ failure() }}`
+      # ensures the steps run despite the previous step's failure of the job.
+      #
+      # https://docs.github.com/actions/reference/context-and-expression-syntax-for-github-actions#job-status-check-functions
+
       - if: ${{ failure() }}
         name: Get title for issue
         id: check
@@ -56,13 +71,14 @@ jobs:
           # Link to the previous report from the new report that triggered this
           # workflow run.
 
-          for issue_url in $(gh list-reports \
+          previous_report_url=$(gh list-reports \
                                   --state all \
                                   --limit 2 \
                                   --json url \
-                                  --jq '.[].url' | grep -v ${{ env.NEW_REPORT_URL }}); do
-            gh issue comment ${{ env.NEW_REPORT_URL }} --body "⬅️ [Previous report]($issue_url)"
-          done
+                                  --jq '.[].url' \
+                                  | grep -v ${{ env.NEW_REPORT_URL }} | head -1)
+
+          gh issue comment ${{ env.NEW_REPORT_URL }} --body "⬅️ [Previous report]($previous_report_url)"
 
           # Link to the newer report from any older report that is still open,
           # then close the older report.
