@@ -7,7 +7,7 @@ redirect_from:
 versions:
   fpt: '*'
   ghes: '*'
-  ghae: '*'
+  ghec: '*'
 topics:
   - Profiles
 children:
@@ -16,5 +16,6 @@ children:
   - /personalizing-your-profile
   - /managing-your-profile-readme
   - /pinning-items-to-your-profile
+  - /setting-your-profile-to-private
+  - /using-your-github-profile-to-enhance-your-resume
 ---
-
